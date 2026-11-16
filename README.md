@@ -30,6 +30,11 @@ Run tests as follows:
 ```bash
 sbt clean -Dbrowser="<browser>" -Denvironment="<environment>" test testReport
 ```
+Make sure that the following JVM Options are added to the run configuration's VM Option sections:
+```
+-Dbrowser=chrome -Denvironment=local -Dbrowser.option.headless=false -Dbrowser.usePreviousVersion=true
+```
+Then, you can run these tests in IntelliJ and debug.
 
 ## Scalafmt
 
