@@ -16,6 +16,52 @@
 
 package uk.gov.hmrc.ui.pages
 
+import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Wait}
+import org.openqa.selenium.{WebDriver, WebElement}
+import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.selenium.component.PageObject
+import uk.gov.hmrc.selenium.webdriver.Driver
+import uk.gov.hmrc.ui.pages.AuthLoginPage.driver
 
-trait BasePage extends PageObject {}
+import java.time.Duration
+import scala.jdk.CollectionConverters.*
+
+trait BasePage extends Matchers with PageObject {
+
+  val submitButtonId: By = By.id("submit-top")
+
+  def fluentWait: Wait[WebDriver] = new FluentWait[WebDriver](Driver.instance)
+    .withTimeout(Duration.ofSeconds(5))
+    .pollingEvery(Duration.ofSeconds(1))
+
+  def continue(locator: By = submitButtonId): Unit = {
+    assertLocatorPresent(locator)
+    click(locator)
+  }
+
+  def navigateTo(url: String): Unit =
+    Driver.instance.navigate().to(url)
+
+  def getElement(locator: By): WebElement =
+    fluentWait.until(ExpectedConditions.visibilityOfElementLocated(locator))
+
+  def isElementDisplayed(locator: By): Boolean =
+    driver.findElements(locator).asScala.nonEmpty &&
+      getElement(locator).isDisplayed
+
+  def isElementEnabled(locator: By): Boolean =
+    driver.findElements(locator).asScala.nonEmpty &&
+      getElement(locator).isEnabled
+
+  def assertLocatorPresent(locator: By): Unit = {
+    val elements = Driver.instance.findElements(locator).asScala
+    require(
+      elements.nonEmpty,
+      s"Expected element with locator [$locator] to be present, but none was found"
+    )
+  }
+
+  def webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(15))
+}
