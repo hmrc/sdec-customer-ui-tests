@@ -25,6 +25,7 @@ object ThreadReferencePage extends BasePage {
   val errorTitleLocator:               By = By.cssSelector("div.govuk-error-summary  div  h2")
   val firstErrorMessageLocator:        By = By.cssSelector("div.govuk-error-summary  div  div  ul  li  a")
   val secondErrorMessageLocator:       By = By.id("thread-reference-error")
+  val devInProgressTextLocator:        By = By.cssSelector("div  h1")
 
   def getServiceNameText:                                  String  = getText(serviceNameLocator)
   def isThreadReferenceInputDisplayed:                     Boolean = isElementDisplayed(threadReferenceTextFieldLocator)
@@ -33,8 +34,10 @@ object ThreadReferencePage extends BasePage {
   def isContinueButtonEnabled:                             Boolean = isElementEnabled(continueButtonLocator)
   def clickContinueButton():                               Unit    = click(continueButtonLocator)
   def getErrorTitleText:                                   String  = getText(errorTitleLocator)
+  def getDevInProgressText:                                String  = getText(devInProgressTextLocator)
   def getFirstErrorMessage:                                String  = getText(firstErrorMessageLocator)
   def getSecondErrorMessage:                               String  = getText(secondErrorMessageLocator)
+  def getUrl:                                              String  = getCurrentUrl
   def enterThreadReference(threadReferenceNumber: String): Unit    =
     sendKeys(threadReferenceTextFieldLocator, threadReferenceNumber)
 }

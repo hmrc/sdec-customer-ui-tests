@@ -38,6 +38,9 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         When("the thread reference page loads, system displays service name")
         ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
+        And("verify url is correct for page")
+        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+
         Then("the system must display the thread reference input field and it is enabled")
         ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
         ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
@@ -59,8 +62,11 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         AuthLoginPage.enterNino(NINO)
         AuthLoginPage.continue()
 
-        When("the  thread reference page loads, system displays service name")
+        When("the thread reference page loads, system displays service name")
         ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+
+        And("verify url is correct for page")
+        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
         Then("the system must display the thread reference input field and it is enabled")
         ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
@@ -74,11 +80,11 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         ThreadReferencePage.clickContinueButton()
 
         Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText should include("There is a problem")
+        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
 
         And("""the system must display the error message "Enter the thread reference number"""")
-        ThreadReferencePage.getFirstErrorMessage  should include("Enter the thread reference number")
-        ThreadReferencePage.getSecondErrorMessage should include("Enter the thread reference number")
+        ThreadReferencePage.getFirstErrorMessage shouldBe "Enter the thread reference number"
+        ThreadReferencePage.getSecondErrorMessage  should include("Enter the thread reference number")
       }
     }
 
@@ -96,6 +102,9 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         When("the  thread reference page loads, system displays service name")
         ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
+        And("verify url is correct for page")
+        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+
         Then("the system must display the thread reference input field and it is enabled")
         ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
         ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
@@ -109,17 +118,15 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         ThreadReferencePage.clickContinueButton()
 
         Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText should include("There is a problem")
+        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
 
         And(
-          "the system must display the error message - The thread reference contains 14 characters using A - Z and 0 - 9 only"
+          "the system must display the error message - Enter a valid thread reference number"
         )
-        ThreadReferencePage.getFirstErrorMessage should include(
-          "The thread reference contains 14 characters using A - Z and 0 - 9 only"
-        )
-        ThreadReferencePage.getSecondErrorMessage should include(
-          "The thread reference contains 14 characters using A - Z and 0 - 9 only"
-        )
+        ThreadReferencePage.getFirstErrorMessage shouldBe
+          "Enter a valid thread reference number"
+        ThreadReferencePage.getSecondErrorMessage should include
+        "Enter a valid thread reference number"
       }
     }
 
@@ -136,6 +143,9 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         When("the  thread reference page loads, system displays service name")
         ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
+        And("verify url is correct for page")
+        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+
         Then("the system must display the thread reference input field and it is enabled")
         ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
         ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
@@ -149,17 +159,15 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         ThreadReferencePage.clickContinueButton()
 
         Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText should include("There is a problem")
+        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
 
         And(
-          "the system must display the error message - The thread reference contains 14 characters using A - Z and 0 - 9 only"
+          "the system must display the error message - Enter a valid thread reference number"
         )
-        ThreadReferencePage.getFirstErrorMessage should include(
-          "The thread reference contains 14 characters using A - Z and 0 - 9 only"
-        )
-        ThreadReferencePage.getSecondErrorMessage should include(
-          "The thread reference contains 14 characters using A - Z and 0 - 9 only"
-        )
+        ThreadReferencePage.getFirstErrorMessage shouldBe
+          "Enter a valid thread reference number"
+        ThreadReferencePage.getSecondErrorMessage should include
+        "Enter a valid thread reference number"
       }
     }
 
@@ -176,6 +184,9 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         When("the  thread reference page loads, system displays service name")
         ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
+        And("verify url is correct for page")
+        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+
         Then("the system must display the thread reference input field and it is enabled")
         ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
         ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
@@ -187,6 +198,10 @@ class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
         And("the user provides invalid format thread reference number and clicks Continue")
         ThreadReferencePage.enterThreadReference("KL897865432222")
         ThreadReferencePage.clickContinueButton()
+
+        And("user navigates to next page which says Dev In Progress")
+        ThreadReferencePage.getUrl               shouldBe "http://localhost:4002/sdec/development-in-progress"
+        ThreadReferencePage.getDevInProgressText shouldBe "Development in progress"
 
         // User is supposed to navigate to next page. Development in progress
       }
