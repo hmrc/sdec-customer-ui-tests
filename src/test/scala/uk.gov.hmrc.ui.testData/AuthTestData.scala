@@ -23,7 +23,7 @@ object AuthTestData {
 
   val userLoginDetails: TableFor3[String, String, String] = Table(
     ("userName", "emailAddress", "NINO"),
-    ("John Smith", "user@test.com", "WM111111D")
+    ("John Smith", "user@example.com", "WM111111D")
   )
 
 }
