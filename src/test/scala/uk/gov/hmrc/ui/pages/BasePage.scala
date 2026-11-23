@@ -17,18 +17,33 @@
 package uk.gov.hmrc.ui.pages
 
 import org.openqa.selenium.By
-import org.openqa.selenium.support.ui.WebDriverWait
-import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Wait}
+import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Select, Wait, WebDriverWait}
 import org.openqa.selenium.{WebDriver, WebElement}
 import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.selenium.component.PageObject
 import uk.gov.hmrc.selenium.webdriver.Driver
+import uk.gov.hmrc.ui.conf.TestConfiguration
 import uk.gov.hmrc.ui.pages.AuthLoginPage.driver
 
 import java.time.Duration
 import scala.jdk.CollectionConverters.*
 
 trait BasePage extends Matchers with PageObject {
+
+  val pageUrl: String
+  val baseUrl: String = TestConfiguration.url("sdec-external-frontend")
+
+  private def fluentWait(timeoutSeconds: Long, pollingMillis: Long = 200): Wait[WebDriver] =
+    new FluentWait[WebDriver](Driver.instance)
+      .withTimeout(Duration.ofSeconds(timeoutSeconds))
+      .pollingEvery(Duration.ofMillis(pollingMillis))
+      .ignoring(classOf[org.openqa.selenium.StaleElementReferenceException])
+      .ignoring(classOf[org.openqa.selenium.NoSuchElementException])
+
+  def assertOnPage(timeoutSeconds: Long = 3): Unit =
+    fluentWait(timeoutSeconds).until(ExpectedConditions.urlToBe(pageUrl))
+
+  def selectDropdownById(id: By): Select = new Select(driver.findElement(id: By))
 
   val submitButtonId: By = By.id("submit-top")
 

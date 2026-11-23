@@ -15,104 +15,55 @@
  */
 
 package uk.gov.hmrc.ui.pages
-
-import org.openqa.selenium.support.ui.{ExpectedConditions, Select}
-import org.openqa.selenium.{By, JavascriptExecutor, WebElement}
+import org.openqa.selenium.By
 import uk.gov.hmrc.ui.conf.TestConfiguration
 import uk.gov.hmrc.ui.driver.BrowserDriver
 
-import scala.jdk.CollectionConverters.*
-
 object AuthLoginPage extends BrowserDriver with BasePage {
 
-  val url:                 String = s"${TestConfiguration.url("auth-login-stub")}/gg-sign-in"
-  val frontEndUrl:         String = TestConfiguration.url("sdec-external-frontend")
-  val threadReferenceUrl:  String = "http://localhost:4502/sdec-alpha"
-  val errorMessageLocator: By     = By.cssSelector("#inputForm  div.govuk-error-summary  a")
+  override val pageUrl: String = TestConfiguration.url("auth-login-stub") + "/gg-sign-in"
 
-  object Fields {
-    val credId:          By = By.id("authorityId")
-    val redirectUrl:     By = By.id("redirectionUrl")
-    val userName:        By = By.id("usersName")
-    val emailAddress:    By = By.id("email")
-    val confidenceLevel: By = By.id("confidenceLevel")
-    val ninoInput:       By = By.id("nino")
-    val submitButtonId:  By = By.id("submit-top")
+  private object Fields {
+    val credId:             By = By.id("authorityId")
+    val redirectionUrlById: By = By.id("redirectionUrl")
+    val affinityGroupById:  By = By.id("affinityGroupSelect")
+    val credentialRoleById: By = By.id("credential-role-select")
+    val userName:           By = By.id("usersName")
+    val userEmail:          By = By.id("email")
+    val confidenceLevel:    By = By.id("confidenceLevel")
+    val userNino:           By = By.id("nino")
+    val authSubmitById:     By = By.id("submit-top")
   }
 
-  private val redirectUrls: Map[String, String] = Map(
-    "sdec-external-frontend" -> frontEndUrl,
-    "sdec-thread-reference"  -> threadReferenceUrl
-  )
-
-  private def resolveRedirect(page: String): String =
-    redirectUrls.getOrElse(
-      page,
-      throw new IllegalArgumentException(s"Unknown redirect page: $page")
-    )
-
-  def login(): Unit = {
-    navigateTo(url)
-    sendKeys(Fields.redirectUrl, resolveRedirect("sdec-external-frontend"))
-
+  private def navigateToAuthLoginPage(): Unit = {
+    navigateTo(pageUrl)
+    assertOnPage()
   }
 
-  def getContinueButton: WebElement =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(Fields.submitButtonId))
+  private def selectAffinityGroup(affinityGroup: String): Unit =
+    selectDropdownById(Fields.affinityGroupById).selectByVisibleText(affinityGroup)
 
-  def getConfidenceLevel: WebElement =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(Fields.confidenceLevel))
+  private def selectCredentialRole(credentialRole: String): Unit =
+    selectDropdownById(Fields.credentialRoleById).selectByVisibleText(credentialRole)
 
-  def getNino: WebElement =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(Fields.ninoInput))
-
-  def getUserName: WebElement =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(Fields.userName))
-
-  def getEmail: WebElement =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(Fields.emailAddress))
-
-  def getErrorMessageText: String =
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator)).getText.trim
-
-  def selectConfidenceLevel(confidenceLevelValue: String): Unit = {
-    val select = new Select(getConfidenceLevel)
-    select.getOptions.asScala.toList
-    select.selectByVisibleText(confidenceLevelValue)
+  private def addUserDetails(): Unit = {
+    sendKeys(Fields.userName, "John Smith")
+    sendKeys(Fields.userEmail, "user@example.com")
+    sendKeys(Fields.userNino, "WM111111D")
   }
 
-  def enterNino(value: String): Unit = {
-    val input = getNino
-    input.clear()
-    input.sendKeys(value)
+  private def submitAuthPage(): Unit = click(Fields.authSubmitById)
+
+  private def submitAuth(affinityGroup: String, credentialRole: String, redirectUrl: String): Unit = {
+    navigateToAuthLoginPage()
+    sendKeys(Fields.redirectionUrlById, redirectUrl)
+    selectAffinityGroup(affinityGroup)
+    selectCredentialRole(credentialRole)
+    addUserDetails()
+    submitAuthPage()
   }
 
-  def enterUserName(value: String): Unit = {
-    val input = getUserName
-    input.clear()
-    input.sendKeys(value)
-  }
-
-  def enterEmailAddress(value: String): Unit = {
-    val input = getEmail
-    input.clear()
-    input.sendKeys(value)
-  }
-
-  def clickContinueButton(): Unit = {
-    val input = getContinueButton
-    input.click()
-  }
-
-  def authIdent(
-  ): Unit = {
-    navigateTo(url)
-    val jsExecutor = driver.asInstanceOf[JavascriptExecutor]
-    driver.manage().deleteAllCookies()
-    jsExecutor.executeScript("window.localStorage.clear();")
-    jsExecutor.executeScript("window.sessionStorage.clear();")
-    driver.navigate().refresh()
-    navigateTo(threadReferenceUrl)
-  }
+  def loginAsExternalUser(redirectUrl: String, affinityGroup: String, credentialRole: String): Unit =
+    submitAuth(redirectUrl, affinityGroup, credentialRole)
 
 }
