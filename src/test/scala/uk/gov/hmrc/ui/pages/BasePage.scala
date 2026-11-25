@@ -23,25 +23,30 @@ import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.selenium.component.PageObject
 import uk.gov.hmrc.selenium.webdriver.Driver
 import uk.gov.hmrc.ui.conf.TestConfiguration
-import uk.gov.hmrc.ui.pages.AuthLoginPage.driver
+import uk.gov.hmrc.ui.pages.AuthWizardPage.driver
 
 import java.time.Duration
+import java.util.regex.Pattern
 import scala.jdk.CollectionConverters.*
 
 trait BasePage extends Matchers with PageObject {
 
   val pageUrl: String
-  val baseUrl: String = TestConfiguration.url("sdec-external-frontend")
+  val baseUrl: String = TestConfiguration.url("sdec-external-frontend").trim
 
-  private def fluentWait(timeoutSeconds: Long, pollingMillis: Long = 200): Wait[WebDriver] =
-    new FluentWait[WebDriver](Driver.instance)
-      .withTimeout(Duration.ofSeconds(timeoutSeconds))
-      .pollingEvery(Duration.ofMillis(pollingMillis))
-      .ignoring(classOf[org.openqa.selenium.StaleElementReferenceException])
-      .ignoring(classOf[org.openqa.selenium.NoSuchElementException])
+  def assertOnPage(url: String, title: String): Unit =
+    assertPage(url, title)
 
-  def assertOnPage(timeoutSeconds: Long = 3): Unit =
-    fluentWait(timeoutSeconds).until(ExpectedConditions.urlToBe(pageUrl))
+  private def assertPage(expectedPageUrl: String, expectedTitle: String): Unit = {
+    assertUrl(expectedPageUrl)
+    assertPageTitle(expectedTitle)
+  }
+
+  def assertUrl(url: String): Unit =
+    fluentWait.until(ExpectedConditions.urlMatches(s"^${Pattern.quote(url)}.*"))
+
+  def assertPageTitle(expectedTitle: String): Unit =
+    fluentWait.until(ExpectedConditions.titleIs(expectedTitle))
 
   def selectDropdownById(id: By): Select = new Select(driver.findElement(id: By))
 

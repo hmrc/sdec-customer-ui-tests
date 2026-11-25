@@ -19,9 +19,11 @@ import org.openqa.selenium.By
 import uk.gov.hmrc.ui.conf.TestConfiguration
 import uk.gov.hmrc.ui.driver.BrowserDriver
 
-object AuthLoginPage extends BrowserDriver with BasePage {
+object AuthWizardPage extends BrowserDriver with BasePage {
 
   override val pageUrl: String = TestConfiguration.url("auth-login-stub") + "/gg-sign-in"
+  val pageTitle:        String = "Authority Wizard"
+  val redirectUrl:      String = s"${TestConfiguration.url("sdec-external-frontend").trim}/thread-reference"
 
   private object Fields {
     val credId:             By = By.id("authorityId")
@@ -37,7 +39,7 @@ object AuthLoginPage extends BrowserDriver with BasePage {
 
   private def navigateToAuthLoginPage(): Unit = {
     navigateTo(pageUrl)
-    assertOnPage()
+    assertOnPage(pageUrl, pageTitle)
   }
 
   private def selectAffinityGroup(affinityGroup: String): Unit =
@@ -46,24 +48,28 @@ object AuthLoginPage extends BrowserDriver with BasePage {
   private def selectCredentialRole(credentialRole: String): Unit =
     selectDropdownById(Fields.credentialRoleById).selectByVisibleText(credentialRole)
 
-  private def addUserDetails(): Unit = {
-    sendKeys(Fields.userName, "John Smith")
-    sendKeys(Fields.userEmail, "user@example.com")
-    sendKeys(Fields.userNino, "WM111111D")
+  private def addSDECCustomerDetails(userName: String, userEmail: String, userNino: String): Unit = {
+    sendKeys(Fields.userName, userName)
+    sendKeys(Fields.userEmail, userEmail)
+    sendKeys(Fields.userNino, userNino)
+  }
+
+  private def submitAuth(
+    userName:  String,
+    userEmail: String,
+    userNino:  String
+  ): Unit = {
+    navigateToAuthLoginPage()
+    sendKeys(Fields.redirectionUrlById, redirectUrl)
+    selectAffinityGroup("Individual")
+    selectCredentialRole("User")
+    addSDECCustomerDetails(userName, userEmail, userNino)
+    submitAuthPage()
   }
 
   private def submitAuthPage(): Unit = click(Fields.authSubmitById)
 
-  private def submitAuth(affinityGroup: String, credentialRole: String, redirectUrl: String): Unit = {
-    navigateToAuthLoginPage()
-    sendKeys(Fields.redirectionUrlById, redirectUrl)
-    selectAffinityGroup(affinityGroup)
-    selectCredentialRole(credentialRole)
-    addUserDetails()
-    submitAuthPage()
-  }
-
-  def loginAsExternalUser(redirectUrl: String, affinityGroup: String, credentialRole: String): Unit =
-    submitAuth(redirectUrl, affinityGroup, credentialRole)
+  def loginAsSdecCustomer(userName: String, userEmail: String, userNino: String): Unit =
+    submitAuth(userName, userEmail, userNino)
 
 }

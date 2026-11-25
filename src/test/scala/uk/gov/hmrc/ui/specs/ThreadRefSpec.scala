@@ -17,7 +17,8 @@
 package uk.gov.hmrc.ui.specs
 
 import org.scalatest.featurespec.AnyFeatureSpec
-import uk.gov.hmrc.ui.pages.ThreadReferencePage
+import uk.gov.hmrc.ui.pages.AuthWizardPage.assertOnPage
+import uk.gov.hmrc.ui.pages.{AuthWizardPage, ThreadDetails_SendAndRequestFilesReceivedPage, ThreadReferencePage}
 import uk.gov.hmrc.ui.specs.tags.AcceptanceTests
 
 class ThreadRefSpec extends BaseSpec {
@@ -25,8 +26,8 @@ class ThreadRefSpec extends BaseSpec {
   Feature("External User Journey - Thread Reference") {
 
     Scenario("Thread Reference page display", AcceptanceTests) {
-      Given("customer successfully navigates to 'Thread Reference Number Input' through 'Authority Wizard Page'")
-      ThreadReferencePage.navigateToTreadReferencePage()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
       When("the thread reference page loads, system displays service name")
       ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
@@ -46,8 +47,8 @@ class ThreadRefSpec extends BaseSpec {
 
     Scenario("Empty field validation of Thread Reference Number", AcceptanceTests) {
 
-      Given("customer successfully logs in through 'Authority Wizard Page'")
-      ThreadReferencePage.navigateToTreadReferencePage()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
       When("the thread reference page loads, system displays service name")
       ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
@@ -76,8 +77,8 @@ class ThreadRefSpec extends BaseSpec {
 
     Scenario("Invalid Format Thread Reference Number Validation", AcceptanceTests) {
 
-      Given("customer successfully logs in through 'Authority Wizard Page'")
-      ThreadReferencePage.navigateToTreadReferencePage()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
       When("the  thread reference page loads, system displays service name")
       ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
@@ -95,7 +96,6 @@ class ThreadRefSpec extends BaseSpec {
 
       And("the user provides invalid format thread reference number and clicks Continue")
       ThreadReferencePage.enterThreadReference("ABCD")
-      ThreadReferencePage.clickContinueButton()
 
       Then("the system must display an error summary at the top of the page")
       ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
@@ -112,8 +112,8 @@ class ThreadRefSpec extends BaseSpec {
 
     Scenario("Input field rules error validation", AcceptanceTests) {
 
-      Given("customer successfully logs in through 'Authority Wizard Page'")
-      ThreadReferencePage.navigateToTreadReferencePage()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
       When("the  thread reference page loads, system displays service name")
       ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
@@ -147,9 +147,8 @@ class ThreadRefSpec extends BaseSpec {
 
     Scenario("User logs in with correct details and provides valid thread reference number", AcceptanceTests) {
 
-      Given("customer successfully logs in through 'Authority Wizard Page'")
-      ThreadReferencePage.navigateToTreadReferencePage()
-      // AuthLoginPage.loginAsExternalUser("http://localhost:4002/sdec/thread-reference")
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
       When("the  thread reference page loads, system displays service name")
       ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
@@ -167,13 +166,13 @@ class ThreadRefSpec extends BaseSpec {
 
       And("the user provides invalid format thread reference number and clicks Continue")
       ThreadReferencePage.enterThreadReference("KL897865432222")
-      ThreadReferencePage.clickContinueButton()
 
-      And("user navigates to next page which says Dev In Progress")
-      ThreadReferencePage.getUrl               shouldBe "http://localhost:4002/sdec/development-in-progress"
-      ThreadReferencePage.getDevInProgressText shouldBe "Development in progress"
-
-      // User is supposed to navigate to next page. Development in progress
+      And("user navigates to 'Thread Details - Share Files Securely with HMRC-Gov UK' page")
+      // ThreadReferencePage.getUrl               shouldBe "http://localhost:4002/sdec/thread-reference/KL897865432222"
+      assertOnPage(
+        ThreadDetails_SendAndRequestFilesReceivedPage.threadViewPageURL("KL897865432222"),
+        ThreadDetails_SendAndRequestFilesReceivedPage.pageTitle
+      )
 
     }
   }
