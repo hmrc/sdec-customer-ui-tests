@@ -26,7 +26,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import scala.jdk.CollectionConverters.*
-import scala.util.chaining.scalaUtilChainingOps
 
 object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with BrowserDriver {
 
@@ -73,7 +72,7 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
     driver.findElement(filesRequestedTimelineDate).getText.trim
 
   def fileRequestedTimelineMessage(implicit driver: WebDriver): String =
-    driver.findElement(filesRequestedTimelineMessage).getText.trim.tap(println)
+    driver.findElement(filesRequestedTimelineMessage).getText.trim
 
   def expectedFileRequestedDateTimeFourDaysAgo: String =
     LocalDateTime.now().minusDays(5).format(DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm", Locale.ENGLISH))
@@ -85,7 +84,7 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
     LocalDateTime.now().plusDays(14).format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
 
   def FileSubmissionDeadlineMessage(implicit driver: WebDriver): String =
-    driver.findElement(filesSubmissionDeadlineMessage).getText.trim.tap(println)
+    driver.findElement(filesSubmissionDeadlineMessage).getText.trim
 
   def helperTextBoxMessage(implicit driver: WebDriver): String =
     driver.findElement(helperTextBoxMessage).getText.trim
@@ -98,16 +97,16 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
       .toSeq
 
   def message1BySDECUser(implicit driver: WebDriver): String =
-    driver.findElement(message1BySDECUser).getText.trim.tap(println)
+    driver.findElement(message1BySDECUser).getText.trim
 
   def message2BySDECUser(implicit driver: WebDriver): String =
-    driver.findElement(message2BySDECUser).getText.trim.tap(println)
+    driver.findElement(message2BySDECUser).getText.trim
 
   def guidelineMessage(implicit driver: WebDriver): String =
-    driver.findElement(guidelineMessage).getText.trim.tap(println)
+    driver.findElement(guidelineMessage).getText.trim
 
   def linkForAttachmentDisplayed(implicit driver: WebDriver): String =
-    driver.findElement(linkForAttachment).getText.trim.tap(println)
+    driver.findElement(linkForAttachment).getText.trim
 
   def replyButtonEnabled: Boolean = isElementEnabled(replyButton)
 
