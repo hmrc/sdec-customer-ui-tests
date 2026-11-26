@@ -37,9 +37,20 @@ class ReplyOptionSpec extends BaseSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
     AuthWizardPage.loginAsSdecCustomer(customerName, customerEmailId, customerNino)
+
+    And("SDEC customer enters thread reference number on 'Enter the thread reference number' page")
     assertOnPage(ThreadReferencePage.pageUrl, ThreadReferencePage.pageTitle)
     ThreadReferencePage.enterThreadReference(customerReferenceNumber)
+
+    And("SDEC customer view communication details on 'Thread Details Page' and attempt to 'reply'")
+    assertOnPage(
+      ThreadDetails_SendAndRequestFilesReceivedPage.threadViewPageURL(customerReferenceNumber),
+      ThreadDetails_SendAndRequestFilesReceivedPage.pageTitle
+      // click replyButton
+    )
+
   }
 
   Feature("View thread communication details for 'file send and reply requested' on 'Thread Details Page") {
