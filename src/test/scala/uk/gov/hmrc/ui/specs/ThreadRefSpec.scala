@@ -17,194 +17,163 @@
 package uk.gov.hmrc.ui.specs
 
 import org.scalatest.featurespec.AnyFeatureSpec
-import org.scalatest.prop.TableDrivenPropertyChecks
-import uk.gov.hmrc.ui.pages.{AuthLoginPage, ThreadReferencePage}
+import uk.gov.hmrc.ui.pages.AuthWizardPage.assertOnPage
+import uk.gov.hmrc.ui.pages.{AuthWizardPage, ThreadDetails_SendAndRequestFilesReceivedPage, ThreadReferencePage}
 import uk.gov.hmrc.ui.specs.tags.AcceptanceTests
-import uk.gov.hmrc.ui.testData.AuthTestData
 
-class ThreadRefSpec extends BaseSpec with TableDrivenPropertyChecks {
+class ThreadRefSpec extends BaseSpec {
 
   Feature("External User Journey - Thread Reference") {
 
     Scenario("Thread Reference page display", AcceptanceTests) {
-      forAll(AuthTestData.userLoginDetails) { (userName, emailAddress, NINO) =>
-        Given("User logs in")
-        AuthLoginPage.login()
-        AuthLoginPage.enterUserName(userName)
-        AuthLoginPage.enterEmailAddress(emailAddress)
-        AuthLoginPage.enterNino(NINO)
-        AuthLoginPage.continue()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
-        When("the thread reference page loads, system displays service name")
-        ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+      When("the thread reference page loads, system displays service name")
+      ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
-        And("verify url is correct for page")
-        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+      And("verify url is correct for page")
+      ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
-        Then("the system must display the thread reference input field and it is enabled")
-        ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
-        ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
+      Then("the system must display the thread reference input field and it is enabled")
+      ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
+      ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
 
-        And("the system must display a continue button and it is enabled")
-        ThreadReferencePage.isContinueButtonDisplayed shouldBe true
-        ThreadReferencePage.isContinueButtonEnabled   shouldBe true
+      And("the system must display a continue button and it is enabled")
+      ThreadReferencePage.isContinueButtonDisplayed shouldBe true
+      ThreadReferencePage.isContinueButtonEnabled   shouldBe true
 
-      }
     }
 
     Scenario("Empty field validation of Thread Reference Number", AcceptanceTests) {
-      forAll(AuthTestData.userLoginDetails) { (userName, emailAddress, NINO) =>
-        Given("User logs in")
-        AuthLoginPage.login()
-        AuthLoginPage.selectConfidenceLevel("200")
-        AuthLoginPage.enterUserName(userName)
-        AuthLoginPage.enterEmailAddress(emailAddress)
-        AuthLoginPage.enterNino(NINO)
-        AuthLoginPage.continue()
 
-        When("the thread reference page loads, system displays service name")
-        ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
-        And("verify url is correct for page")
-        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+      When("the thread reference page loads, system displays service name")
+      ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
-        Then("the system must display the thread reference input field and it is enabled")
-        ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
-        ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
+      And("verify url is correct for page")
+      ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
-        And("the system must display a continue button and it is enabled")
-        ThreadReferencePage.isContinueButtonDisplayed shouldBe true
-        ThreadReferencePage.isContinueButtonEnabled   shouldBe true
+      Then("the system must display the thread reference input field and it is enabled")
+      ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
+      ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
 
-        And("the user clicks Continue without entering a value")
-        ThreadReferencePage.clickContinueButton()
+      And("the system must display a continue button and it is enabled")
+      ThreadReferencePage.isContinueButtonDisplayed shouldBe true
+      ThreadReferencePage.isContinueButtonEnabled   shouldBe true
 
-        Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
+      And("the user clicks Continue without entering a value")
+      ThreadReferencePage.clickContinueButton()
 
-        And("""the system must display the error message "Enter the thread reference number"""")
-        ThreadReferencePage.getFirstErrorMessage shouldBe "Enter the thread reference number"
-        ThreadReferencePage.getSecondErrorMessage  should include("Enter the thread reference number")
-      }
+      Then("the system must display an error summary at the top of the page")
+      ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
+
+      And("""the system must display the error message "Enter the thread reference number"""")
+      ThreadReferencePage.getFirstErrorMessage shouldBe "Enter the thread reference number"
+      ThreadReferencePage.getSecondErrorMessage  should include("Enter the thread reference number")
     }
 
     Scenario("Invalid Format Thread Reference Number Validation", AcceptanceTests) {
 
-      forAll(AuthTestData.userLoginDetails) { (userName, emailAddress, NINO) =>
-        Given("User logs in")
-        AuthLoginPage.login()
-        AuthLoginPage.selectConfidenceLevel("200")
-        AuthLoginPage.enterUserName(userName)
-        AuthLoginPage.enterEmailAddress(emailAddress)
-        AuthLoginPage.enterNino(NINO)
-        AuthLoginPage.continue()
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
-        When("the  thread reference page loads, system displays service name")
-        ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+      When("the  thread reference page loads, system displays service name")
+      ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
-        And("verify url is correct for page")
-        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+      And("verify url is correct for page")
+      ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
-        Then("the system must display the thread reference input field and it is enabled")
-        ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
-        ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
+      Then("the system must display the thread reference input field and it is enabled")
+      ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
+      ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
 
-        And("the system must display a continue button and it is enabled")
-        ThreadReferencePage.isContinueButtonDisplayed shouldBe true
-        ThreadReferencePage.isContinueButtonEnabled   shouldBe true
+      And("the system must display a continue button and it is enabled")
+      ThreadReferencePage.isContinueButtonDisplayed shouldBe true
+      ThreadReferencePage.isContinueButtonEnabled   shouldBe true
 
-        And("the user provides invalid format thread reference number and clicks Continue")
-        ThreadReferencePage.enterThreadReference("ABCD")
-        ThreadReferencePage.clickContinueButton()
+      And("the user provides invalid format thread reference number and clicks Continue")
+      ThreadReferencePage.enterThreadReference("ABCD")
 
-        Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
+      Then("the system must display an error summary at the top of the page")
+      ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
 
-        And(
-          "the system must display the error message - Enter a valid thread reference number"
-        )
-        ThreadReferencePage.getFirstErrorMessage shouldBe
-          "Enter a valid thread reference number"
-        ThreadReferencePage.getSecondErrorMessage should include
+      And(
+        "the system must display the error message - Enter a valid thread reference number"
+      )
+      ThreadReferencePage.getFirstErrorMessage shouldBe
         "Enter a valid thread reference number"
-      }
+      ThreadReferencePage.getSecondErrorMessage should include
+      "Enter a valid thread reference number"
+
     }
 
     Scenario("Input field rules error validation", AcceptanceTests) {
-      forAll(AuthTestData.userLoginDetails) { (userName, emailAddress, NINO) =>
-        Given("User logs in")
-        AuthLoginPage.login()
-        AuthLoginPage.selectConfidenceLevel("200")
-        AuthLoginPage.enterUserName(userName)
-        AuthLoginPage.enterEmailAddress(emailAddress)
-        AuthLoginPage.enterNino(NINO)
-        AuthLoginPage.continue()
 
-        When("the  thread reference page loads, system displays service name")
-        ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
-        And("verify url is correct for page")
-        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+      When("the  thread reference page loads, system displays service name")
+      ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
-        Then("the system must display the thread reference input field and it is enabled")
-        ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
-        ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
+      And("verify url is correct for page")
+      ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
-        And("the system must display a continue button and it is enabled")
-        ThreadReferencePage.isContinueButtonDisplayed shouldBe true
-        ThreadReferencePage.isContinueButtonEnabled   shouldBe true
+      Then("the system must display the thread reference input field and it is enabled")
+      ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
+      ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
 
-        And("the user provides invalid format thread reference number and clicks Continue")
-        ThreadReferencePage.enterThreadReference("ABCD$%&cv")
-        ThreadReferencePage.clickContinueButton()
+      And("the system must display a continue button and it is enabled")
+      ThreadReferencePage.isContinueButtonDisplayed shouldBe true
+      ThreadReferencePage.isContinueButtonEnabled   shouldBe true
 
-        Then("the system must display an error summary at the top of the page")
-        ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
+      And("the user provides invalid format thread reference number and clicks Continue")
+      ThreadReferencePage.enterThreadReference("ABCD$%&cv")
+      ThreadReferencePage.clickContinueButton()
 
-        And(
-          "the system must display the error message - Enter a valid thread reference number"
-        )
-        ThreadReferencePage.getFirstErrorMessage shouldBe
-          "Enter a valid thread reference number"
-        ThreadReferencePage.getSecondErrorMessage should include
+      Then("the system must display an error summary at the top of the page")
+      ThreadReferencePage.getErrorTitleText shouldBe "There is a problem"
+
+      And(
+        "the system must display the error message - Enter a valid thread reference number"
+      )
+      ThreadReferencePage.getFirstErrorMessage shouldBe
         "Enter a valid thread reference number"
-      }
+      ThreadReferencePage.getSecondErrorMessage should include
+      "Enter a valid thread reference number"
     }
 
     Scenario("User logs in with correct details and provides valid thread reference number", AcceptanceTests) {
-      forAll(AuthTestData.userLoginDetails) { (userName, emailAddress, NINO) =>
-        Given("User logs in")
-        AuthLoginPage.login()
-        AuthLoginPage.selectConfidenceLevel("200")
-        AuthLoginPage.enterUserName(userName)
-        AuthLoginPage.enterEmailAddress(emailAddress)
-        AuthLoginPage.enterNino(NINO)
-        AuthLoginPage.continue()
 
-        When("the  thread reference page loads, system displays service name")
-        ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
+      Given("SDEC customer successfully navigates to sdec service page through 'Authority Wizard Page'")
+      AuthWizardPage.loginAsSdecCustomer("John Smith", "user@example.com", "WM111111D")
 
-        And("verify url is correct for page")
-        ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
+      When("the  thread reference page loads, system displays service name")
+      ThreadReferencePage.getServiceNameText shouldBe "Share Files Securely with HMRC"
 
-        Then("the system must display the thread reference input field and it is enabled")
-        ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
-        ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
+      And("verify url is correct for page")
+      ThreadReferencePage.getUrl shouldBe "http://localhost:4002/sdec/thread-reference"
 
-        And("the system must display a continue button and it is enabled")
-        ThreadReferencePage.isContinueButtonDisplayed shouldBe true
-        ThreadReferencePage.isContinueButtonEnabled   shouldBe true
+      Then("the system must display the thread reference input field and it is enabled")
+      ThreadReferencePage.isThreadReferenceInputDisplayed shouldBe true
+      ThreadReferencePage.isThreadReferenceInputEnabled   shouldBe true
 
-        And("the user provides invalid format thread reference number and clicks Continue")
-        ThreadReferencePage.enterThreadReference("KL897865432222")
-        ThreadReferencePage.clickContinueButton()
+      And("the system must display a continue button and it is enabled")
+      ThreadReferencePage.isContinueButtonDisplayed shouldBe true
+      ThreadReferencePage.isContinueButtonEnabled   shouldBe true
 
-        And("user navigates to next page which says Dev In Progress")
-        ThreadReferencePage.getUrl               shouldBe "http://localhost:4002/sdec/development-in-progress"
-        ThreadReferencePage.getDevInProgressText shouldBe "Development in progress"
+      And("the user provides invalid format thread reference number and clicks Continue")
+      ThreadReferencePage.enterThreadReference("KL897865432222")
 
-        // User is supposed to navigate to next page. Development in progress
-      }
+      And("user navigates to 'Thread Details - Share Files Securely with HMRC-Gov UK' page")
+      assertOnPage(
+        ThreadDetails_SendAndRequestFilesReceivedPage.threadViewPageURL("KL897865432222"),
+        ThreadDetails_SendAndRequestFilesReceivedPage.pageTitle
+      )
+
     }
   }
+
 }

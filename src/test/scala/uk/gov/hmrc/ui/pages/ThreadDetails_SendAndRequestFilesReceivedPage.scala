@@ -1,0 +1,115 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.ui.pages
+
+import org.openqa.selenium.{By, WebDriver}
+import org.scalactic.Prettifier.default
+import org.scalatest.matchers.must.Matchers.mustBe
+import uk.gov.hmrc.ui.conf.TestConfiguration
+import uk.gov.hmrc.ui.driver.BrowserDriver
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import scala.jdk.CollectionConverters.*
+
+object ThreadDetails_SendAndRequestFilesReceivedPage extends BrowserDriver with BasePage {
+
+  val pageTitle: String =
+    "Thread details - Share Files Securely with HMRC - GOV.UK"
+
+  override val pageUrl: String = s"${TestConfiguration.url("sdec-customer-frontend").trim}/thread"
+
+  def threadViewPageURL(threadReferenceNumber: String): String =
+    s"$pageUrl/${threadReferenceNumber.trim}"
+
+  private val threadReferenceNumber: By = By.cssSelector("span.govuk-caption-l")
+  private val customerName:  By = By.cssSelector("#main-content .govuk-grid-column-two-thirds > h1.govuk-heading-l")
+  private val statusMessage: By = By.cssSelector("#main-content .govuk-inset-text[role='status']")
+  private val filesRequestedTimelineDate:     By = By.cssSelector("#main-content .hmrc-timeline__event-meta")
+  private val filesRequestedTimelineMessage:  By = By.cssSelector(".hmrc-timeline__event-title")
+  private val filesSubmissionDeadlineDate:    By = By.cssSelector(".sdec-requested-files .govuk-body > strong")
+  private val filesSubmissionDeadlineMessage: By = By.cssSelector(".sdec-requested-files .govuk-body:first-of-type")
+  private val helperTextBoxMessage:           By = By.cssSelector(".sdec-requested-files .govuk-body:nth-of-type(2)")
+  private val message1BySDECUser:             By = By.cssSelector(".sdec-requested-files + p.govuk-body")
+  private val message2BySDECUser:             By = By.cssSelector(".sdec-requested-files + p.govuk-body + p.govuk-body")
+  private val guidelineMessage:               By =
+    By.cssSelector(".sdec-requested-files + p.govuk-body + p.govuk-body + p.govuk-body")
+
+  private val linkForAttachment: By = By.cssSelector(".govuk-link")
+  private val replyButton:       By = By.cssSelector(".govuk-grid-column-two-thirds .govuk-button")
+
+  def getThreadReferenceNumber(implicit driver: WebDriver): String = {
+    val threadReferenceText: String = driver.findElement(threadReferenceNumber).getText
+    threadReferenceText.replace("Thread reference number:", "").trim
+  }
+
+  def verifyCustomerIdentityDetails(
+    expectedName:            String,
+    expectedReferenceNumber: String,
+    expectedStatus:          String
+  ): Unit = {
+    driver.findElement(customerName).getText.trim mustBe expectedName
+    driver.findElement(threadReferenceNumber).getText.split(":").last.trim mustBe expectedReferenceNumber
+    driver.findElement(statusMessage).getText.trim mustBe expectedStatus
+  }
+
+  def actualFileRequestedTimelineDate(): String =
+    getText(filesRequestedTimelineDate).trim
+
+  def fileRequestedTimelineMessage(): String =
+    getText(filesRequestedTimelineMessage).trim
+
+  def expectedFileRequestedDateTimeFourDaysAgo: String =
+    LocalDateTime.now().minusDays(5).format(DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm", Locale.ENGLISH))
+
+  def actualFilesSubmissionDeadlineDate(): String =
+    getText(filesSubmissionDeadlineDate).trim
+
+  def expectedFilesSubmissionDeadline: String =
+    LocalDateTime.now().plusDays(14).format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+
+  def fileSubmissionDeadlineMessage(): String =
+    getText(filesSubmissionDeadlineMessage).trim
+
+  def helperTextBoxMessageText(): String =
+    getText(helperTextBoxMessage).trim
+
+  def bulletListItems: Seq[String] =
+    driver
+      .findElements(By.cssSelector(".sdec-requested-files ul.govuk-list li"))
+      .asScala
+      .map(_.getText.trim)
+      .toSeq
+
+  def message1BySDECUserText(): String =
+    getText(message1BySDECUser).trim
+
+  def message2BySDECUserText(): String =
+    getText(message2BySDECUser).trim
+
+  def guidelineMessageText(): String =
+    getText(guidelineMessage).trim
+
+  def linkForAttachmentDisplayedText(): String =
+    getText(linkForAttachment).trim
+
+  def replyButtonEnabled: Boolean = isElementEnabled(replyButton)
+
+  def replyButtonClickable(): Unit =
+    click(replyButton)
+}

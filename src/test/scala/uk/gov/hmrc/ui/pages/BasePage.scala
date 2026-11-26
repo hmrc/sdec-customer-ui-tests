@@ -17,18 +17,38 @@
 package uk.gov.hmrc.ui.pages
 
 import org.openqa.selenium.By
-import org.openqa.selenium.support.ui.WebDriverWait
-import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Wait}
+import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Select, Wait, WebDriverWait}
 import org.openqa.selenium.{WebDriver, WebElement}
 import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.selenium.component.PageObject
 import uk.gov.hmrc.selenium.webdriver.Driver
-import uk.gov.hmrc.ui.pages.AuthLoginPage.driver
+import uk.gov.hmrc.ui.conf.TestConfiguration
+import uk.gov.hmrc.ui.pages.AuthWizardPage.driver
 
 import java.time.Duration
+import java.util.regex.Pattern
 import scala.jdk.CollectionConverters.*
 
 trait BasePage extends Matchers with PageObject {
+
+  val pageUrl: String
+  val baseUrl: String = TestConfiguration.url("sdec-customer-frontend").trim
+
+  def assertOnPage(url: String, title: String): Unit =
+    assertPage(url, title)
+
+  private def assertPage(expectedPageUrl: String, expectedTitle: String): Unit = {
+    assertUrl(expectedPageUrl)
+    assertPageTitle(expectedTitle)
+  }
+
+  def assertUrl(url: String): Unit =
+    fluentWait.until(ExpectedConditions.urlMatches(s"^${Pattern.quote(url)}.*"))
+
+  def assertPageTitle(expectedTitle: String): Unit =
+    fluentWait.until(ExpectedConditions.titleIs(expectedTitle))
+
+  def selectDropdownById(id: By): Select = new Select(driver.findElement(id: By))
 
   val submitButtonId: By = By.id("submit-top")
 
