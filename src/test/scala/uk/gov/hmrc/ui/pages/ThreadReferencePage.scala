@@ -19,7 +19,7 @@ import org.openqa.selenium.By
 import uk.gov.hmrc.ui.conf.TestConfiguration
 
 object ThreadReferencePage extends BasePage {
-  override val pageUrl: String = s"${TestConfiguration.url("sdec-external-frontend").trim}/thread-reference"
+  override val pageUrl: String = s"${TestConfiguration.url("sdec-customer-frontend").trim}/thread-reference"
   val pageTitle:        String = "Enter the thread reference number - Share Files Securely with HMRC - GOV.UK"
 
   val serviceNameLocator:              By = By.cssSelector("section div div span a")

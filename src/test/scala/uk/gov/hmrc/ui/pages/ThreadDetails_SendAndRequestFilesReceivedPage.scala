@@ -27,12 +27,12 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import scala.jdk.CollectionConverters.*
 
-object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with BrowserDriver {
+object ThreadDetails_SendAndRequestFilesReceivedPage extends BrowserDriver with BasePage {
 
   val pageTitle: String =
     "Thread details - Share Files Securely with HMRC - GOV.UK"
 
-  override val pageUrl: String = s"${TestConfiguration.url("sdec-external-frontend").trim}/thread"
+  override val pageUrl: String = s"${TestConfiguration.url("sdec-customer-frontend").trim}/thread"
 
   def threadViewPageURL(threadReferenceNumber: String): String =
     s"$pageUrl/${threadReferenceNumber.trim}"
@@ -68,26 +68,26 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
     driver.findElement(statusMessage).getText.trim mustBe expectedStatus
   }
 
-  def actualFileRequestedTimelineDate(implicit driver: WebDriver): String =
-    driver.findElement(filesRequestedTimelineDate).getText.trim
+  def actualFileRequestedTimelineDate(): String =
+    getText(filesRequestedTimelineDate).trim
 
-  def fileRequestedTimelineMessage(implicit driver: WebDriver): String =
-    driver.findElement(filesRequestedTimelineMessage).getText.trim
+  def fileRequestedTimelineMessage(): String =
+    getText(filesRequestedTimelineMessage).trim
 
   def expectedFileRequestedDateTimeFourDaysAgo: String =
     LocalDateTime.now().minusDays(5).format(DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm", Locale.ENGLISH))
 
-  def actualFilesSubmissionDeadlineDate(implicit driver: WebDriver): String =
-    driver.findElement(filesSubmissionDeadlineDate).getText.trim
+  def actualFilesSubmissionDeadlineDate(): String =
+    getText(filesSubmissionDeadlineDate).trim
 
   def expectedFilesSubmissionDeadline: String =
     LocalDateTime.now().plusDays(14).format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
 
-  def FileSubmissionDeadlineMessage(implicit driver: WebDriver): String =
-    driver.findElement(filesSubmissionDeadlineMessage).getText.trim
+  def fileSubmissionDeadlineMessage(): String =
+    getText(filesSubmissionDeadlineMessage).trim
 
-  def helperTextBoxMessage(implicit driver: WebDriver): String =
-    driver.findElement(helperTextBoxMessage).getText.trim
+  def helperTextBoxMessageText(): String =
+    getText(helperTextBoxMessage).trim
 
   def bulletListItems: Seq[String] =
     driver
@@ -96,17 +96,17 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
       .map(_.getText.trim)
       .toSeq
 
-  def message1BySDECUser(implicit driver: WebDriver): String =
-    driver.findElement(message1BySDECUser).getText.trim
+  def message1BySDECUserText(): String =
+    getText(message1BySDECUser).trim
 
-  def message2BySDECUser(implicit driver: WebDriver): String =
-    driver.findElement(message2BySDECUser).getText.trim
+  def message2BySDECUserText(): String =
+    getText(message2BySDECUser).trim
 
-  def guidelineMessage(implicit driver: WebDriver): String =
-    driver.findElement(guidelineMessage).getText.trim
+  def guidelineMessageText(): String =
+    getText(guidelineMessage).trim
 
-  def linkForAttachmentDisplayed(implicit driver: WebDriver): String =
-    driver.findElement(linkForAttachment).getText.trim
+  def linkForAttachmentDisplayedText(): String =
+    getText(linkForAttachment).trim
 
   def replyButtonEnabled: Boolean = isElementEnabled(replyButton)
 

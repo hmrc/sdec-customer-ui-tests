@@ -20,7 +20,6 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.scalatest.prop.TableDrivenPropertyChecks.forAll
 import org.scalatest.prop.Tables.Table
-import uk.gov.hmrc.selenium.webdriver.Driver.instance
 import uk.gov.hmrc.ui.pages.AuthWizardPage.assertOnPage
 import uk.gov.hmrc.ui.pages.{AuthWizardPage, ThreadDetails_SendAndRequestFilesReceivedPage, ThreadReferencePage}
 import uk.gov.hmrc.ui.specs.tags.AcceptanceTests
@@ -62,14 +61,18 @@ class ThreadDetails_SendAndRequestFilesReceivedSpec extends BaseSpec {
           .verifyCustomerIdentityDetails(customerName, customerReferenceNumber, "HMRC is waiting for your reply.")
 
         And("Files requested timeline instruction is displayed correctly with timeline date")
-        ThreadDetails_SendAndRequestFilesReceivedPage.fileRequestedTimelineMessage mustBe "File(s) sent and reply requested by HMRC"
-        ThreadDetails_SendAndRequestFilesReceivedPage.actualFileRequestedTimelineDate mustBe ThreadDetails_SendAndRequestFilesReceivedPage.expectedFileRequestedDateTimeFourDaysAgo
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .fileRequestedTimelineMessage() mustBe "File(s) sent and reply requested by HMRC"
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .actualFileRequestedTimelineDate() mustBe ThreadDetails_SendAndRequestFilesReceivedPage.expectedFileRequestedDateTimeFourDaysAgo
 
         And("Files submission deadline instruction is displayed correctly with deadline date")
-        ThreadDetails_SendAndRequestFilesReceivedPage.FileSubmissionDeadlineMessage mustBe "You must provide the following by " + ThreadDetails_SendAndRequestFilesReceivedPage.expectedFilesSubmissionDeadline
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .fileSubmissionDeadlineMessage() mustBe "You must provide the following by " + ThreadDetails_SendAndRequestFilesReceivedPage.expectedFilesSubmissionDeadline
 
         And("Helper text block content is displayed correctly")
-        ThreadDetails_SendAndRequestFilesReceivedPage.helperTextBoxMessage mustBe "If you cannot provide any or all of the file(s) requested, press Reply and select the option which applies to you."
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .helperTextBoxMessageText() mustBe "If you cannot provide any or all of the file(s) requested, press Reply and select the option which applies to you."
 
         And("Bullet list of mandatory items are displayed exactly as requested by SDEC user")
         ThreadDetails_SendAndRequestFilesReceivedPage.bulletListItems mustBe Seq(
@@ -78,18 +81,21 @@ class ThreadDetails_SendAndRequestFilesReceivedSpec extends BaseSpec {
         )
 
         And("Messages are displayed exactly as entered by SDEC user")
-        ThreadDetails_SendAndRequestFilesReceivedPage.message1BySDECUser mustBe "Please provide your payslip for June 2026 and a proof of address."
-        ThreadDetails_SendAndRequestFilesReceivedPage.message2BySDECUser mustBe "Proof of address can include a range of documents including a recent bank or building society statement, utility bill, Council Tax bill, mortgage statement, P45 or P60, benefit entitlement letter, pension or financial statement, bank account opening letter, or a driving licence showing their current address."
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .message1BySDECUserText() mustBe "Please provide your payslip for June 2026 and a proof of address."
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .message2BySDECUserText() mustBe "Proof of address can include a range of documents including a recent bank or building society statement, utility bill, Council Tax bill, mortgage statement, P45 or P60, benefit entitlement letter, pension or financial statement, bank account opening letter, or a driving licence showing their current address."
 
         And("Guideline message displayed correctly")
-        ThreadDetails_SendAndRequestFilesReceivedPage.guidelineMessage mustBe "Any document provided should clearly show your full name and current address."
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .guidelineMessageText() mustBe "Any document provided should clearly show your full name and current address."
 
         And("Attachment section displays hyperlinks for the files uploaded by SDEC user")
-        ThreadDetails_SendAndRequestFilesReceivedPage.linkForAttachmentDisplayed mustBe "Proof of Address Guidance Sheet.docx"
+        ThreadDetails_SendAndRequestFilesReceivedPage
+          .linkForAttachmentDisplayedText() mustBe "Proof of Address Guidance Sheet.docx"
 
         And("reply button is enable for SDEC customer to click")
         ThreadDetails_SendAndRequestFilesReceivedPage.replyButtonClickable()
-
       }
     }
   }
