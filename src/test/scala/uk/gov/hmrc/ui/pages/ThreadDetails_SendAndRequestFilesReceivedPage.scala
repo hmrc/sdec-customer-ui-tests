@@ -32,7 +32,7 @@ object ThreadDetails_SendAndRequestFilesReceivedPage extends BasePage with Brows
   val pageTitle: String =
     "Thread details - Share Files Securely with HMRC - GOV.UK"
 
-  override val pageUrl: String = s"${TestConfiguration.url("sdec-external-frontend").trim}/thread"
+  override val pageUrl: String = s"${TestConfiguration.url("sdec-customer-frontend").trim}/thread"
 
   def threadViewPageURL(threadReferenceNumber: String): String =
     s"$pageUrl/${threadReferenceNumber.trim}"

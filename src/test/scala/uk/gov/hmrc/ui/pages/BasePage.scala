@@ -32,7 +32,7 @@ import scala.jdk.CollectionConverters.*
 trait BasePage extends Matchers with PageObject {
 
   val pageUrl: String
-  val baseUrl: String = TestConfiguration.url("sdec-external-frontend").trim
+  val baseUrl: String = TestConfiguration.url("sdec-customer-frontend").trim
 
   def assertOnPage(url: String, title: String): Unit =
     assertPage(url, title)

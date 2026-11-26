@@ -168,7 +168,6 @@ class ThreadRefSpec extends BaseSpec {
       ThreadReferencePage.enterThreadReference("KL897865432222")
 
       And("user navigates to 'Thread Details - Share Files Securely with HMRC-Gov UK' page")
-      // ThreadReferencePage.getUrl               shouldBe "http://localhost:4002/sdec/thread-reference/KL897865432222"
       assertOnPage(
         ThreadDetails_SendAndRequestFilesReceivedPage.threadViewPageURL("KL897865432222"),
         ThreadDetails_SendAndRequestFilesReceivedPage.pageTitle

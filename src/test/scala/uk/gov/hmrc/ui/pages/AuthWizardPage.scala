@@ -23,7 +23,7 @@ object AuthWizardPage extends BrowserDriver with BasePage {
 
   override val pageUrl: String = TestConfiguration.url("auth-login-stub") + "/gg-sign-in"
   val pageTitle:        String = "Authority Wizard"
-  val redirectUrl:      String = s"${TestConfiguration.url("sdec-external-frontend").trim}/thread-reference"
+  val redirectUrl:      String = s"${TestConfiguration.url("sdec-customer-frontend").trim}/thread-reference"
 
   private object Fields {
     val credId:             By = By.id("authorityId")
